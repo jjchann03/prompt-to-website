@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -23,4 +23,22 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.prompt-textarea::-webkit-scrollbar {
+  width: 12px;
+  height: 100%;
+}
+
+.prompt-textarea::-webkit-scrollbar-track{
+  background: rgb(58, 58, 58);
+  border-radius: 7px;
+  cursor: pointer;
+  height: 100%;
+}
+
+.prompt-textarea::-webkit-scrollbar-thumb{
+  background: white;
+  cursor: pointer;
+  border-radius: 7px;
 }

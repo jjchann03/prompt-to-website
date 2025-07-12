@@ -1,103 +1,113 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState } from 'react';
+import PromptUI from './Components/PromptUI';
+import { CodeGenProvider, useCodeGen } from './Context/CodeGenContext';
+import { getDisplayName } from 'next/dist/shared/lib/utils';
+import { MdFullscreen } from "react-icons/md";
+import { IoCopy } from "react-icons/io5";
+
+function App() {
+  const [code,setCode] = useState<String>('');
+  const [loading,setLoading] = useState<Boolean>(false);
+  const [url,setUrl] = useState<String>('');
+  const { isCodeGenerated, setIsCodeGenerated } = useCodeGen();
+
+  console.log(isCodeGenerated);
+  useEffect(()=>{
+
+  },[url])
+
+  const generateWebsite = async(prompt: string) => {
+    setLoading(true);
+    setCode(''); //Sets the previous code to empty
+    try{
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-type':'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      });
+
+      const data = await response.json(); // response is code in the form of json
+      if(data.code){
+        setCode(data.code);
+        console.log("Code generate: ", data.code);
+      }
+
+      setIsCodeGenerated(true);
+
+      const blob = new Blob([data.code], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      setUrl(url);
+    }catch(error: any){
+      console.error("Failed to fetch code ", error);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  const promptDiv = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundImage:"url('https://res.cloudinary.com/dzwhk4bsm/image/upload/v1752087094/ChatGPT_Image_Jul_10_2025_12_12_53_AM_mysntu.png')",
+    height: "100%"
+  }
+  const codePromptDiv = {
+    height: "auto"
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className='w-full flex h-screen' style={isCodeGenerated ? {flexDirection:'column-reverse'}:{}}>
+      <div
+      className='bg-[#282727a3] w-full bg-end bg-cover'
+      style={isCodeGenerated ? codePromptDiv : promptDiv}
+      >
+        <div className='text-center' style={isCodeGenerated ? {display:'none'}:{display:'block'}}>
+          <h1 className='text-[3rem] transform scale-y-110 leading-20 font-[600]'>
+              B<span className='text-[#5444ff]'>ui</span>ld Some<span className='text-[#d549ff]'>th</span>ing <span className='text-[#ff4015]'>G</span>reat
+          </h1>
+          <p className='text-xl mt-[5px] text-[#ffbcac]'>Creating a website is no longer a hassle.</p>
+          <p className='text-xl mt-[5px] text-[#ffbcac]'>Just write in what you want and we'll deliver it.</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <PromptUI generateWebsite={generateWebsite}/>
+      </div>
+
+      <div 
+      style={isCodeGenerated?{display:'flex',flexGrow: "1"}:{display:'none'}}
+      className='generated-code-container
+      w-full h-[80%] bg-[#444444]'
+      >
+        <div 
+        className='screen w-[50%] min-h-[100%] px-[0.8rem] py-[1rem]'
+        >    
+          <div className='iframe-controls h-[8%] flex justify-between items-center 
+          px-[0.5rem] bg-[#212121] rounded-t-[7px]'>
+            <p className='text-xs font-semibold'>Website display</p>
+            <button><MdFullscreen className='text-2xl'/></button>
+          </div>
+          <iframe
+            title='Generated Code' 
+            src={`${url}`}
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            className='w-full h-[92%] rounded-b-[7px]'
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+
+        <div className='code-display w-[50%] min-h-[100%] p-[1rem] overflow-hidden'>
+          <div className='w-full overflow-hidden h-full'>
+            <div className='iframe-controls h-[8%] flex justify-between items-center 
+            px-[0.5rem] bg-[#212121] rounded-t-[7px]'>
+              <p className='text-xs font-semibold'>Website Code</p>
+              <button><IoCopy className='text-md'/></button>
+            </div>
+            <div className='w-full h-[92%] bg-black overflow-y-scroll rounded-b-[7px]'><p>{code}</p></div>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
+
+export default App;
