@@ -13,11 +13,6 @@ function App() {
   const { isCodeGenerated, setIsCodeGenerated } = useCodeGen();
   const { loading, setLoading } = useCodeGen();
 
-  console.log(isCodeGenerated);
-  useEffect(()=>{
-
-  },[url])
-
   const generateWebsite = async(prompt: string) => {
     setLoading(true);
     setCode(''); //Sets the previous code to empty
@@ -29,19 +24,21 @@ function App() {
       });
 
       const data = await response.json(); // response is code in the form of json
+
       if(data.code){
         setCode(data.code);
-        console.log("Code generate: ", data.code);
+        setIsCodeGenerated(true);
+      }else{
+        alert(data.error);
       }
-
-      setIsCodeGenerated(true);
 
       const blob = new Blob([data.code], {type:'text/html'});
       const url = URL.createObjectURL(blob);
       setUrl(url);
     }catch(error: unknown){
+      console.log("entered here")
       if (error instanceof Error) {
-        console.error("Failed to fetch code ", error.message);
+        console.log("Failed to fetch code ", error.message);
       } else {
         console.error("Unknown error occurred", error);
       } 

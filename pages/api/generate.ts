@@ -19,14 +19,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const { prompt } = req.body;
 
-        if(!prompt) return res.status(400).send({error: "Prompt is required in the request body."});
-        console.log("Prompt received:", prompt);
+        if(!prompt) return res.status(400).send({error: "Prompt is required: Please write a prompt before hitting the button"});
 
         const chat = [
             {
                 role: "user",
                 parts: [{
-                    text: `Generate a complete, single-file HTML document with inline CSS and JavaScript for a website based on the following description: "${prompt}". Ensure it's fully responsive, includes a meta viewport tag, and looks modern and appealing. Use Tailwind CSS for styling by including '<script src="https://cdn.tailwindcss.com"></script>' in the <head>. Do not include any external image URLs; use placeholder images (e.g., from placehold.co) or inline SVG if needed. Provide only the HTML code, no extra text, no markdown backticks outside the HTML itself.`
+                    text: `Generate a complete, single-file HTML document with inline CSS and JavaScript for a website based on the following description: "${prompt}". Ensure it's fully responsive, includes a meta viewport tag, and looks modern and appealing. Use Tailwind CSS for styling by including '<script src="https://cdn.tailwindcss.com"></script>' in the <head>. Include any external image URLs that will make the site very appealing; use placeholder images (e.g., from placehold.co) or inline SVG if needed. Provide only the HTML code, no extra text, no markdown backticks outside the HTML itself.`
                 }]
             }
         ]
@@ -41,7 +40,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const result = await geminiResponse.json();
         console.log(result);
-        const code = result.candidates[0].content.parts[0].text;
+        let code = ''
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            code = result.candidates[0].content.parts[0].text;
+
+            if (code.startsWith('```html\n')) {
+                code = code.slice('```html\n'.length);
+            } else if (code.startsWith('```html')) {
+                code = code.slice('```html'.length);
+            }
+
+            if (code.endsWith('\n```')) {
+                code = code.slice(0, -'\n```'.length);
+            } else if (code.endsWith('```')) {
+                code = code.slice(0, -'```'.length);
+            }
+        }else{
+            return res.status(500).json({ error: "Failed to generate code: Unexpected API response format." });
+        }
 
         res.status(200).json({ code });
     } catch (err: unknown) { // Change 'any' to 'unknown'
@@ -56,6 +74,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // You could add more checks here for other potential error types
 
         console.error("❌ Function crashed:", errorMessage || err);
-        return res.status(500).json({ error: "Internal Server Error", detail: errorMessage });
+        return res.status(500).json({ error: `Internal Server Error: ${errorMessage}` });
     }
 }
