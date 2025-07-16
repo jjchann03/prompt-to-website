@@ -16,9 +16,8 @@ function App() {
   const generateWebsite = async(prompt: string) => {
     setLoading(true);
     setCode(''); //Sets the previous code to empty
-    //https://prompt-to-website-pnay.vercel.app/
     try{
-      const response = await fetch('api/generate', {
+      const response = await fetch('https://prompt-to-website-pnay.vercel.app/api/generate', {
         method: 'POST',
         headers: { 'Content-type':'application/json' },
         body: JSON.stringify({ prompt: prompt })
