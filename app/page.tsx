@@ -16,8 +16,9 @@ function App() {
   const generateWebsite = async(prompt: string) => {
     setLoading(true);
     setCode(''); //Sets the previous code to empty
+    //https://prompt-to-website-pnay.vercel.app/
     try{
-      const response = await fetch('https://prompt-to-website-pnay.vercel.app/api/generate', {
+      const response = await fetch('api/generate', {
         method: 'POST',
         headers: { 'Content-type':'application/json' },
         body: JSON.stringify({ prompt: prompt })
@@ -44,6 +45,16 @@ function App() {
       } 
     }finally{
       setLoading(false);
+    }
+  }
+
+  const handleCopyCode = async () => {
+    try{
+      await navigator.clipboard.writeText(code);
+      alert('Code copied to clipboard!');
+    }catch(err){
+      console.log(err);
+      alert('Failed to copy. Please try again.')
     }
   }
 
@@ -88,9 +99,15 @@ function App() {
             <div className='iframe-controls h-[8%] flex justify-between items-center 
             px-[0.5rem] bg-[#212121] rounded-t-[7px]'>
               <p className='text-xs font-semibold'>Website Code</p>
-              <button><IoCopy className='text-md'/></button>
+              <button onClick={handleCopyCode}><IoCopy className='text-md'/></button>
             </div>
-            <div className='w-full h-[92%] bg-black overflow-y-scroll rounded-b-[7px]'><p>{code}</p></div>
+            <div className='w-full h-[92%] bg-black overflow-y-scroll rounded-b-[7px] p-[0.5rem]'>
+              <pre className="**whitespace-pre-wrap**">
+                <code className="text-white text-sm">
+                  {code}
+                </code>
+              </pre>
+            </div>
           </div>
         </div>
       </div>

@@ -25,7 +25,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             {
                 role: "user",
                 parts: [{
-                    text: `Generate a complete, single-file HTML document with inline CSS and JavaScript for a website based on the following description: "${prompt}". Ensure it's fully responsive, includes a meta viewport tag, and looks modern and appealing. Use Tailwind CSS for styling by including '<script src="https://cdn.tailwindcss.com"></script>' in the <head>. Include any external image URLs that will make the site very appealing; use placeholder images (e.g., from placehold.co) or inline SVG if needed. Provide only the HTML code, no extra text, no markdown backticks outside the HTML itself.`
+                    text: `Generate a complete, single-file HTML document for a website based on the following description: "${prompt}".
+
+                    **Strict Output Requirements:**
+                    1.  Provide ONLY the HTML code. Do NOT include any extra text, explanations, comments outside the HTML structure, or Markdown code block fences (like \`\`\`html or \`\`\`).
+                    2.  The HTML must be properly formatted, with consistent indentation, newlines between elements, and a clean, readable structure. Every opening and closing tag should be in a new separate line. Donot generate single-line code or compacted code. This is super important to note.
+                    3.  The website should be fully responsive and include a meta viewport tag in the <head>.
+                    4.  For styling, include the Tailwind CSS CDN script in the <head>: \`<script src="https://cdn.tailwindcss.com"></script>\`.
+                    5.  Integrate inline CSS within <style> tags in the <head> for any custom styles not easily achieved with Tailwind.
+                    6.  Include any necessary JavaScript directly within <script> tags, preferably at the end of the <body> for performance.
+                    7.  Use calm and minimalist themes (preferrable pastel colors) with proper background colors and all throughout the website.
+                    8.  The overall design should be modern and appealing and have the same theme thoughout the site.`
                 }]
             }
         ]
