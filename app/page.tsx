@@ -2,16 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import PromptUI from './Components/PromptUI';
-import { CodeGenProvider, useCodeGen } from './Context/CodeGenContext';
-import { getDisplayName } from 'next/dist/shared/lib/utils';
-import { MdFullscreen } from "react-icons/md";
+import { useCodeGen } from './Context/CodeGenContext';
 import { IoCopy } from "react-icons/io5";
+import Loading from './Components/Loading';
+import WebDisplay from './Components/WebDisplay';
 
 function App() {
   const [code,setCode] = useState<String>('');
-  const [loading,setLoading] = useState<Boolean>(false);
-  const [url,setUrl] = useState<String>('');
+  const [url,setUrl] = useState<string>('');
   const { isCodeGenerated, setIsCodeGenerated } = useCodeGen();
+  const { loading, setLoading } = useCodeGen();
 
   console.log(isCodeGenerated);
   useEffect(()=>{
@@ -60,6 +60,7 @@ function App() {
 
   return (
     <div className='w-full flex h-screen' style={isCodeGenerated ? {flexDirection:'column-reverse'}:{}}>
+      <Loading loading={loading}/>
       <div
       className='bg-[#282727a3] w-full bg-end bg-cover'
       style={isCodeGenerated ? codePromptDiv : promptDiv}
@@ -79,21 +80,7 @@ function App() {
       className='generated-code-container
       w-full h-[80%] bg-[#444444]'
       >
-        <div 
-        className='screen w-[50%] min-h-[100%] px-[0.8rem] py-[1rem]'
-        >    
-          <div className='iframe-controls h-[8%] flex justify-between items-center 
-          px-[0.5rem] bg-[#212121] rounded-t-[7px]'>
-            <p className='text-xs font-semibold'>Website display</p>
-            <button><MdFullscreen className='text-2xl'/></button>
-          </div>
-          <iframe
-            title='Generated Code' 
-            src={`${url}`}
-            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-            className='w-full h-[92%] rounded-b-[7px]'
-          />
-        </div>
+        <WebDisplay url={url}/>
 
         <div className='code-display w-[50%] min-h-[100%] p-[1rem] overflow-hidden'>
           <div className='w-full overflow-hidden h-full'>

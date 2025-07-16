@@ -42,3 +42,38 @@ body {
   cursor: pointer;
   border-radius: 7px;
 }
+
+
+
+/* Loading spinner */
+.spinner-div{
+  width: 8%;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner{
+  width: 100%;
+  height: 80%;
+  color: blue;
+  animation: spin 1.5s 50ms infinite linear;
+}
+
+.dots::after{
+  content: '';
+  animation: dots 1.5s infinite;
+}
+
+@keyframes spin{
+  0% {transform: rotate(0deg)}
+  100% {transform: rotate(360deg);}
+}
+
+@keyframes dots{
+  0% {content: '';}
+  30% {content: '.';}
+  60% {content: '..';}
+  90% {content: '...';}
+}

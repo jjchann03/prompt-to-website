@@ -8,61 +8,61 @@ interface Props{
 }
 
 const PromptUI: React.FC<Props> = ({generateWebsite}) => {
-    const [prompt,setPrompt] = useState('');
-    const { isCodeGenerated, setIsCodeGenerated } = useCodeGen();
+    const [prompt,setPrompt] = useState<string>('');
+    const { isCodeGenerated } = useCodeGen();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         generateWebsite(prompt);
     }
 
-    const promptStyle = {
+    const promptStyle: React.CSSProperties = {
         flexDirection: "column",
         justifyContent: "center",
         height: "content",
         width: "60%"
     }
-    const codePromptStyle = {
+    const codePromptStyle: React.CSSProperties = {
         height: "100%",
         width: "100%",
         overflow: "hidden"
     }
 
-    const formStyle = {
+    const formStyle: React.CSSProperties = {
         margin: "2rem 1rem 0 1rem",
         flexDirection: 'column',
         width: "55%",
         padding: "0.8rem 1rem"
     }
-    const codeFormStyle = {
+    const codeFormStyle: React.CSSProperties = {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
         padding: "0.8rem",
     }
 
-    const taStyle = {
+    const taStyle: React.CSSProperties = {
         height: "7rem",
         padding: "1rem",
         borderRadius: "7px",
         width: "100%",
     }
-    const codeTaStyle = {
+    const codeTaStyle: React.CSSProperties = {
         height: "3rem",
         padding: "0.8rem 1.6rem",
-        boxSizing: "content",
+        boxSizing: "content-box",
         borderRadius: "2rem",
         width: "70%"
     }
 
-    const buttonStyle = {
+    const buttonStyle: React.CSSProperties = {
         width: "20%",
         borderRadius: "7px",
         padding: "8px 0",
         fontSize: "0.85rem",
         margin: "2.5rem auto 0",
     }
-    const codeButtonStyle = {
+    const codeButtonStyle: React.CSSProperties = {
         borderRadius: "100%",
         padding: "10px",
         marginLeft: "1rem"
