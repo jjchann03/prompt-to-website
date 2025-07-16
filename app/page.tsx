@@ -8,7 +8,7 @@ import Loading from './Components/Loading';
 import WebDisplay from './Components/WebDisplay';
 
 function App() {
-  const [code,setCode] = useState<String>('');
+  const [code,setCode] = useState<string>('');
   const [url,setUrl] = useState<string>('');
   const { isCodeGenerated, setIsCodeGenerated } = useCodeGen();
   const { loading, setLoading } = useCodeGen();
@@ -39,8 +39,12 @@ function App() {
       const blob = new Blob([data.code], {type:'text/html'});
       const url = URL.createObjectURL(blob);
       setUrl(url);
-    }catch(error: any){
-      console.error("Failed to fetch code ", error);
+    }catch(error: unknown){
+      if (error instanceof Error) {
+        console.error("Failed to fetch code ", error.message);
+      } else {
+        console.error("Unknown error occurred", error);
+      } 
     }finally{
       setLoading(false);
     }
@@ -70,7 +74,7 @@ function App() {
               B<span className='text-[#5444ff]'>ui</span>ld Some<span className='text-[#d549ff]'>th</span>ing <span className='text-[#ff4015]'>G</span>reat
           </h1>
           <p className='text-xl mt-[5px] text-[#ffbcac]'>Creating a website is no longer a hassle.</p>
-          <p className='text-xl mt-[5px] text-[#ffbcac]'>Just write in what you want and we'll deliver it.</p>
+          <p className='text-xl mt-[5px] text-[#ffbcac]'>Just write in what you want and we&rsquo;ll deliver it.</p>
         </div>
         <PromptUI generateWebsite={generateWebsite}/>
       </div>

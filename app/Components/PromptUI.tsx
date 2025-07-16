@@ -16,17 +16,17 @@ const PromptUI: React.FC<Props> = ({generateWebsite}) => {
         generateWebsite(prompt);
     }
 
-    const promptStyle: React.CSSProperties = {
-        flexDirection: "column",
-        justifyContent: "center",
-        height: "content",
-        width: "60%"
-    }
-    const codePromptStyle: React.CSSProperties = {
-        height: "100%",
-        width: "100%",
-        overflow: "hidden"
-    }
+    // const promptStyle: React.CSSProperties = {
+    //     flexDirection: "column",
+    //     justifyContent: "center",
+    //     height: "content",
+    //     width: "60%"
+    // }
+    // const codePromptStyle: React.CSSProperties = {
+    //     height: "100%",
+    //     width: "100%",
+    //     overflow: "hidden"
+    // }
 
     const formStyle: React.CSSProperties = {
         margin: "2rem 1rem 0 1rem",
